@@ -75,6 +75,7 @@ Thank you for your interest in this project, and we appreciate your understandin
 💥User DC Check.<br>
 💥Custom Domain support. <br>
 💥All unwanted code removed. <br>
+💥Ban Function Added.<br>
 💥A lot more tired of writing check out by deploying it. 
 </details>
   <details>
