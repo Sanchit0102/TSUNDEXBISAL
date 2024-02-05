@@ -1,4 +1,4 @@
-# (c) @biisal
+#(c) @biisal
 #(c) Adarsh-Goel
 import datetime
 import motor.motor_asyncio
@@ -9,6 +9,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
         self.db = self._client[database_name]
         self.col = self.db.users
+        self.bannedList = self.db.bannedList
 
     def new_user(self, id):
         return dict(
@@ -42,3 +43,30 @@ class Database:
 
     async def delete_user(self, user_id):
         await self.col.delete_many({'id': int(user_id)})
+        
+    async def ban_user(self , user_id):
+        user = await self.bannedList.find_one({'banId' : int(user_id)})
+        if user:
+            return False
+        else:
+            await self.bannedList.insert_one({'banId' : int(user_id)})
+            return True
+        
+    async def is_banned(self , user_id):
+        user = await self.bannedList.find_one({'banId' : int(user_id)})
+        return True if user else False
+    
+    async def is_unbanned(self , user_id):
+        try : 
+            if await self.bannedList.find_one({'banId' : int(user_id)}):
+                await self.bannedList.delete_one({'banId' : int(user_id)})
+                return True
+            else:
+                return False
+        except Exception as e:
+            e = f'Fᴀɪʟᴇᴅ ᴛᴏ ᴜɴʙᴀɴ.Rᴇᴀsᴏɴ : {e}'
+            print(e)
+            return e
+    
+
+    
