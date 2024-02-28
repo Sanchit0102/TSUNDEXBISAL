@@ -96,6 +96,32 @@ async def private_receive_handler(c: Client, m: Message):
         await asyncio.sleep(e.x)
         await c.send_message(chat_id=Var.BIN_CHANNEL, text=f"Gᴏᴛ FʟᴏᴏᴅWᴀɪᴛ ᴏғ {str(e.x)}s from [{m.from_user.first_name}](tg://user?id={m.from_user.id})\n\n**𝚄𝚜𝚎𝚛 𝙸𝙳 :** `{str(m.from_user.id)}`", disable_web_page_preview=True)
 
+@StreamBot.on_message(filters.command("link"))
+async def gen_link_handler(bot, message):
+    try:
+        media = message.reply_to_message
+        if message.reply_to_message and (media.document or
+                                          media.video or
+                                          media.audio or
+                                          media.photo):
+            
+            log_msg = await media.copy(int(Var.BIN_CHANNEL))
+            stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
+            online_link = f"{Var.URL}/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
+
+            await message.reply_text(
+                text=msg_text.format(get_name(log_msg), humanbytes(get_media_file_size(log_msg)), online_link, stream_link),
+                quote=True,
+                disable_web_page_preview=True,
+                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("sᴛʀᴇᴀᴍ 🔺", url=stream_link),
+                                                    InlineKeyboardButton('ᴅᴏᴡɴʟᴏᴀᴅ 🔻', url=online_link)]])
+            )                                  
+            
+        else:
+            await message.reply_text("Reply to a valid media file with `/link` to generate a download link.")
+    except Exception as e:
+        await message.reply_text(f"Error generating link: {e}")
+
 @StreamBot.on_message(filters.channel & ~filters.group & (filters.document | filters.video | filters.photo)  & ~filters.forwarded, group=-1)
 async def channel_receive_handler(bot, broadcast):
     if int(broadcast.chat.id) in Var.BAN_CHNL:
