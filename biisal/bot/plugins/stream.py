@@ -107,7 +107,7 @@ async def gen_link_handler(bot, message):
             
             log_msg = await media.copy(int(Var.BIN_CHANNEL))
             stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
-            online_link = f"{Var.URL}/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
+            online_link = f"{Var.URL}dl/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
 
             await message.reply_text(
                 text=msg_text.format(get_name(log_msg), humanbytes(get_media_file_size(log_msg)), online_link, stream_link),
